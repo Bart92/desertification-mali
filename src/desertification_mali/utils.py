@@ -3,6 +3,7 @@ import glob
 import re
 from typing import List, Tuple
 import rasterio
+import psutil
 
 def get_unique_dates(input_dir: str) -> List[str]:
     """
@@ -41,3 +42,15 @@ def get_transform_and_crs(date_dir: str, reference_band: str = "B02") -> Tuple[r
     """
     with rasterio.open(os.path.join(date_dir, f'{reference_band}.jp2')) as src:
         return src.transform, src.crs
+    
+
+def log_memory_usage(stage: str):
+    """
+    Logs the current memory usage.
+    
+    Parameters:
+    - stage (str): Description of the current stage for logging purposes.
+    """
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    print(f"[{stage}] Memory usage: {mem_info.rss / (1024 * 1024)} MB")

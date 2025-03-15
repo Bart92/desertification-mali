@@ -62,18 +62,26 @@ def save_image_as_jp2(output_path: str, image: np.ndarray, transform: rasterio.A
     with rasterio.open(
         output_path, 'w',
         driver='JP2OpenJPEG',
-        width=image.shape[1],
-        height=image.shape[0],
+        width=image.shape[2] if image.ndim == 3 else image.shape[1],
+        height=image.shape[1] if image.ndim == 3 else image.shape[0],
         count=count,
         dtype=image.dtype,
         crs=crs,
         transform=transform
     ) as dst:
         if count == 3:
-            dst.write(image[:, :, 0], 1)
-            dst.write(image[:, :, 1], 2)
-            dst.write(image[:, :, 2], 3)
+            if image.shape[0] == 3:  # (bands, height, width)
+                dst.write(image[0], 1)
+                dst.write(image[1], 2)
+                dst.write(image[2], 3)
+            else:  # (height, width, bands)
+                dst.write(image[:, :, 0], 1)
+                dst.write(image[:, :, 1], 2)
+                dst.write(image[:, :, 2], 3)
         elif count == 1:
-            dst.write(image, 1)
+            if image.ndim == 2:  # (height, width)
+                dst.write(image, 1)
+            else:  # (bands, height, width)
+                dst.write(image[0], 1)
         else:
             raise ValueError(f"Invalid count {count} for image bands. Expected 1 or 3.")
