@@ -5,7 +5,7 @@ import os
 import re
 from typing import List, Optional
 
-def merge_tiles(input_dir: str, output_path: str, date: Optional[str] = None) -> None:
+def merge_tiles(input_dir: str, output_path: str, dates: List[str]) -> None:
     """
     Merges Sentinel-2 tiles for specified bands (B02, B03, B04, B08) for a given date or all unique dates and
     writes them to a file (see merge_tiles_by_date).
@@ -19,11 +19,6 @@ def merge_tiles(input_dir: str, output_path: str, date: Optional[str] = None) ->
     - None
     """
     os.makedirs(output_path, exist_ok=True)
-
-    if date:
-        dates = [date]
-    else:
-        dates = get_unique_dates(input_dir)
     
     for date in dates:
         merge_tiles_by_date(input_dir, output_path, date)
@@ -70,27 +65,5 @@ def merge_tiles_by_date(input_dir: str, output_path: str, date: str, bands: List
         os.makedirs(os.path.join(output_path, date), exist_ok=True)
         with rasterio.open(os.path.join(output_path, date, f"{band}.jp2"), "w", **out_meta) as dest:
             dest.write(mosaic)
-        print(f"Merged the tiles of {band} and saved it to {output_path}/{band}.jp2 ({i+1}/{len(bands_to_include)})")
+        print(f"Merged the tiles of {band} and saved it to {output_path}/{band}.jp2 ({i+1}/{len(bands)})")
 
-def get_unique_dates(input_dir: str) -> List[str]:
-    """
-    Extracts unique dates from the directory names in the input directory.
-    Note that the regex is tailored to Sentinel2 level 2A data.
-
-    Parameters:
-    - input_dir (str): Directory containing the raw Sentinel-2 tiles.
-
-    Returns:
-    - list: Sorted list of unique dates in the format 'YYYYMMDD'.
-    """
-    search_pattern = os.path.join(input_dir, '*.SAFE')
-    safe_dirs = glob.glob(search_pattern)
-    
-    dates = set()
-    for safe_dir in safe_dirs:
-        match = re.search(r'MSIL2A_(\d{8})T', os.path.basename(safe_dir))
-        if match:
-            dates.add(match.group(1))
-    
-    print(f"Unique dates found: {sorted(dates)}")
-    return sorted(dates)
