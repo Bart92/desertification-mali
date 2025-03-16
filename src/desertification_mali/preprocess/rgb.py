@@ -1,6 +1,17 @@
 import os
 import numpy as np
 from desertification_mali.preprocess.io import save_image_as_jp2
+import cv2
+
+def gamma_correction(image, gamma=1.5):
+    """Apply gamma correction to enhance brightness."""
+    return np.clip(image ** (1/gamma), 0, 1)
+
+def apply_clahe(band):
+    """Apply CLAHE to enhance local contrast."""
+    band = (band * 255).astype(np.uint8)  # Convert to 8-bit
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    return clahe.apply(band) / 255.0  # Rescale to [0,1]
 
 def create_rgb(B02: np.ndarray, B03: np.ndarray, B04: np.ndarray) -> np.ndarray:
     """
@@ -14,7 +25,12 @@ def create_rgb(B02: np.ndarray, B03: np.ndarray, B04: np.ndarray) -> np.ndarray:
     Returns:
     - np.ndarray: Array containing the RGB image data.
     """
-    rgb = np.dstack((B04, B03, B02))
+    red = gamma_correction(apply_clahe(B04 / 10000), gamma=1.8)
+    green = gamma_correction(apply_clahe(B03 / 10000), gamma=1.8)
+    blue = gamma_correction(apply_clahe(B02 / 10000), gamma=1.8)
+
+    rgb = np.dstack((red, green, blue))
+
     return (rgb / np.max(rgb) * 255).astype(np.uint8)
 
 def save_rgb(B02, B03, B04, date, output_dir, transform, crs):

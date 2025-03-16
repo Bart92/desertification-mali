@@ -56,13 +56,9 @@ class Preprocessor:
             log_memory_usage("Before reading bands")
 
             B02 = read_band(date_dir, 'B02')
-            log_memory_usage("After B02")
-
             B03 = read_band(date_dir, 'B03')
-            log_memory_usage("After B03")
-
             B04 = read_band(date_dir, 'B04')
-            log_memory_usage("After B04")
+
             save_rgb(B02, B03, B04, date, self.merged_output_dir, transform, crs)
             # Release memory
             del B02, B03
@@ -70,16 +66,16 @@ class Preprocessor:
             B08 = read_band(date_dir, 'B08')
             save_ndvi(B04, B08, date, self.merged_output_dir, transform, crs)
 
-            # Release memory
+            # # Release memory
             del B04, B08
 
     def create_patches(self):
         """
         Creates 512x512 patches of both NDVI and RGB images.
         """
-        for date in self.dates:
-            create_patches(
-                os.path.join(self.merged_output_dir, date, "RGB.jp2"), 
-                os.path.join(self.patch_output_dir, date)
-            )
+        create_patches(
+            self.merged_output_dir, 
+            self.patch_output_dir,
+            self.dates
+        )
         
