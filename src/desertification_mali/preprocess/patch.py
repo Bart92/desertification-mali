@@ -55,6 +55,7 @@ def create_patches(input_dir: str, output_dir: str, dates: list, size=512, manua
         assert src1.height == src2.height, "Heights of the images for both years do not match."
         
         width, height = src1.width, src1.height
+        # TODO: Throw out the last patch on the right and bottom if it's not a full patch
         patches = [(x, y) for x in range(0, width, size) for y in range(0, height, size)]
         random.shuffle(patches)
 
