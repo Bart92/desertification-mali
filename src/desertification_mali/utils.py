@@ -4,6 +4,10 @@ import re
 from typing import List, Tuple
 import rasterio
 import psutil
+import os
+import csv
+import re
+
 
 def get_unique_dates(input_dir: str) -> List[str]:
     """
@@ -54,3 +58,40 @@ def log_memory_usage(stage: str):
     process = psutil.Process(os.getpid())
     mem_info = process.memory_info()
     print(f"[{stage}] Memory usage: {mem_info.rss / (1024 * 1024)} MB")
+
+
+def generate_initial_label_file(patch_dir: str, output_file: str) -> None:
+    """
+    Generates a label file for the patches in the specified directory.
+
+    Parameters:
+    - patch_dir (str): Path to the directory containing the patches.
+    - output_file (str): Path to the output CSV file to store the labels.
+    """
+    def sort_key(patch_name: str) -> tuple:
+        """
+        Extracts the numerical parts of the patch name for sorting.
+
+        Parameters:
+        - patch_name (str): The name of the patch.
+
+        Returns:
+        - tuple: A tuple containing the numerical parts of the patch name.
+        """
+        match = re.match(r'patch_(\d+)_(\d+)', patch_name)
+        if match:
+            x = int(match.group(1))
+            y = int(match.group(2))
+            return (x, y)
+        return (0, 0)
+
+    labels = {}
+    patch_names = sorted(os.listdir(patch_dir), key=sort_key)
+    for patch_name in patch_names:
+        labels[patch_name] = 0  # Initialize with label 0
+
+    with open(output_file, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['patch_id', 'label'])
+        for patch_id, label in labels.items():
+            writer.writerow([patch_id, label])

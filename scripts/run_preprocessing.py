@@ -9,9 +9,13 @@ It consists of the following steps:
 
 from desertification_mali.preprocess.preprocess import Preprocessor
 
-input_directory = 'data/raw_tiles'
-output_directory = 'data/merged_tiles'
-patch_directory = 'data/patches'
+def main():
+    input_directory = 'data/raw_tiles'
+    output_directory = 'data/merged_tiles'
+    patch_directory = 'data/patches'
 
-preprocessor = Preprocessor(input_directory, output_directory, patch_directory)
-preprocessor.run()
+    preprocessor = Preprocessor(input_directory, output_directory, patch_directory)
+    preprocessor.run()
+
+if __name__ == "__main__":
+    main()
