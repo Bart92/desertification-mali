@@ -16,15 +16,16 @@ class Trainer:
     - optimizer (torch.optim.Optimizer): The optimizer for training the model.
     - dataloader (DataLoader): The DataLoader for iterating over the dataset.
     """
-    def __init__(self, model: torch.nn.Module, dataset: torch.utils.data.Dataset, batch_size: int = 8, learning_rate: int = 0.001, num_epochs: int = 10) -> None:
+    def __init__(self, model: torch.nn.Module, dataset: torch.utils.data.Dataset, batch_size: int = 8, learning_rate: int = 0.001, num_epochs: int = 10, l2_lambda: float = 0.0) -> None:
         self.model = model
         self.dataset = dataset
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
+        self.l2_lambda = l2_lambda
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=self.l2_lambda)
         self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
 
     def train(self) -> None:
