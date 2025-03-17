@@ -16,6 +16,8 @@ class Trainer:
     - device (torch.device): The device to run the training on (CPU or GPU).
     - optimizer (torch.optim.Optimizer): The optimizer for training the model.
     - dataloader (DataLoader): The DataLoader for iterating over the dataset.
+    - scheduler (torch.optim.lr_scheduler.ReduceLROnPlateau): The learning rate scheduler.
+    - early_stopping_patience (int): The number of epochs to wait for an improvement before stopping training.
     """
     def __init__(self, model: torch.nn.Module, dataset: torch.utils.data.Dataset, batch_size: int = 8, learning_rate: int = 0.001, num_epochs: int = 10, l2_lambda: float = 0.0) -> None:
         self.model = model
@@ -24,11 +26,15 @@ class Trainer:
         self.learning_rate = learning_rate
         self.num_epochs = num_epochs
         self.l2_lambda = l2_lambda
+
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=self.l2_lambda)
         self.scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=0.1, patience=5, verbose=True)
         self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
+        self.early_stopping_patience = 5
+        self.best_loss = float('inf')
+        self.epochs_no_improve = 0
 
     def train(self) -> None:
         """
@@ -50,6 +56,16 @@ class Trainer:
                 
                 # TODO: Also add accuracy and F1 score
                 total_loss += loss.item()
-                
+
             self.scheduler.step(total_loss)
             print(f"Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/len(self.dataloader)}")
+
+            if total_loss < self.best_loss:
+                self.best_loss = total_loss
+                self.epochs_no_improve = 0
+            else:
+                self.epochs_no_improve += 1
+
+            if self.epochs_no_improve >= self.early_stopping_patience:
+                print(f"Early stopping after {epoch+1} epochs.")
+                break
