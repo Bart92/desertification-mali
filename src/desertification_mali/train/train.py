@@ -1,6 +1,7 @@
 from desertification_mali.train.model import loss_function
 import torch
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 class Trainer:
     """
@@ -26,6 +27,7 @@ class Trainer:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate, weight_decay=self.l2_lambda)
+        self.scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=0.1, patience=5, verbose=True)
         self.dataloader = DataLoader(self.dataset, batch_size=self.batch_size, shuffle=True)
 
     def train(self) -> None:
@@ -48,4 +50,6 @@ class Trainer:
                 
                 # TODO: Also add accuracy and F1 score
                 total_loss += loss.item()
+                
+            self.scheduler.step(total_loss)
             print(f"Epoch [{epoch+1}/{self.num_epochs}], Loss: {total_loss/len(self.dataloader)}")
