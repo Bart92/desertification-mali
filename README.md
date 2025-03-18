@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project applies a Fully Convolutional Siamese Network (FCSN) to detect desertification in Mali using Sentinel-2 satellite imagery. The model is trained to identify land cover changes between 2020 and 2025, utilizing labeled image pairs. The primary goal is to showcase AI-based change detection capabilities within remote sensing as part of my portfolio.
+This project applies a standard Siamese Network (SN) to detect desertification in Mali using Sentinel-2 satellite imagery. The model is trained to identify land cover changes between 2020 and 2025, utilizing labeled image pairs. The primary goal is to showcase AI-based change detection capabilities within remote sensing as part of my portfolio.
 
 ## Installation
 

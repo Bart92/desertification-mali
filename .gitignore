@@ -1,6 +1,3 @@
-# Ignore data files
-data/
-
 # Ignore Jupyter notebook checkpoints
 notebooks/.ipynb_checkpoints
 
@@ -20,11 +17,11 @@ mali/
 *.egg-info/
 
 # Ignore data, logs, models files but keep the directory
-data/
+data/*
 !data/.gitkeep
-logs/
+logs/*
 !logs/.gitkeep
-models/
+models/*
 !models/.gitkeep
-results/
+results/*
 !results/.gitkeep
