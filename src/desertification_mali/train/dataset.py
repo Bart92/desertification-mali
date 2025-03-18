@@ -14,11 +14,13 @@ class NDVIDataset(Dataset):
     Attributes:
     - patch_dir (str): Path to the directory containing the patches.
     - labels (pd.DataFrame): DataFrame containing the patch IDs and their corresponding labels.
+    - train (bool): Flag indicating whether the dataset is for training or inference.
     """
 
-    def __init__(self, patch_dir: str, label_file: pd.DataFrame) -> None:
+    def __init__(self, patch_dir: str, label_file: pd.DataFrame, train: bool = True) -> None:
         self.patch_dir = patch_dir
         self.labels = pd.read_csv(label_file)
+        self.train = train
 
     def __len__(self) -> int:
         return len(self.labels)
@@ -47,6 +49,9 @@ class NDVIDataset(Dataset):
         
         ndvi_2020 = torch.tensor(ndvi_2020).unsqueeze(0)  # Add channel dimension
         ndvi_2025 = torch.tensor(ndvi_2025).unsqueeze(0)  # Add channel dimension
-        label = torch.tensor(label).float()
         
-        return ndvi_2020, ndvi_2025, label
+        if self.train:
+            label = torch.tensor(label).float()
+            return ndvi_2020, ndvi_2025, label
+        else:
+            return ndvi_2020, ndvi_2025

@@ -8,7 +8,7 @@ import random
 from desertification_mali.train.model import SiameseNetwork
 from desertification_mali.train.dataset import NDVIDataset
 from desertification_mali.train.train import Trainer
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 def sample_hyperparameters():
     """
@@ -58,7 +58,9 @@ def evaluate_model(hyperparameters):
     
     accuracy = accuracy_score(all_targets, all_predictions)
     f1 = f1_score(all_targets, all_predictions)
-    return accuracy, f1
+    precision = precision_score(all_targets, all_predictions)
+    recall = recall_score(all_targets, all_predictions)
+    return accuracy, f1, precision, recall
 
 def main():
     num_trials = 2
@@ -67,8 +69,8 @@ def main():
     
     for _ in range(num_trials):
         hyperparameters = sample_hyperparameters()
-        accuracy, f1 = evaluate_model(hyperparameters)
-        print(f"Accuracy: {accuracy}, F1 score: {f1}")
+        accuracy, f1, precision, recall = evaluate_model(hyperparameters)
+        print(f"Accuracy: {accuracy}, F1 score: {f1}, Precision: {precision}, Recall: {recall}")
         
         if accuracy > best_accuracy:
             best_accuracy = accuracy
