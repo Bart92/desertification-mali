@@ -1,6 +1,9 @@
+"""
+This script is used to run inference on the model.
+"""
+
 from desertification_mali.inference.predict import load_model, predict, preprocess_data
 import torch
-
 
 def main():
     model_path = 'models/final_model_bs8_lr0.008841921163357549_epochs10_l20.09466658850904519.pth'
