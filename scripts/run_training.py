@@ -8,7 +8,7 @@ import random
 from desertification_mali.train.model import SiameseNetwork
 from desertification_mali.train.dataset import NDVIDataset
 from desertification_mali.train.train import Trainer
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score
 
 def sample_hyperparameters():
     """
@@ -18,7 +18,7 @@ def sample_hyperparameters():
     - dict: A dictionary containing sampled hyperparameters.
     """
     return {
-        'batch_size': random.choice([4, 8, 16]),
+        'batch_size': random.choice([4, 8]),
         'learning_rate': random.uniform(0.0001, 0.01),
         'num_epochs': random.choice([10, 20, 30]),
         'l2_lambda': random.uniform(0.0, 0.1)
@@ -57,17 +57,18 @@ def evaluate_model(hyperparameters):
         all_predictions.extend((output.detach().cpu().numpy() > 0.5).astype(int))
     
     accuracy = accuracy_score(all_targets, all_predictions)
-    return accuracy
+    f1 = f1_score(all_targets, all_predictions)
+    return accuracy, f1
 
 def main():
-    num_trials = 10
+    num_trials = 2
     best_accuracy = 0
     best_hyperparameters = None
     
     for _ in range(num_trials):
         hyperparameters = sample_hyperparameters()
-        accuracy = evaluate_model(hyperparameters)
-        print(f"Hyperparameters: {hyperparameters}, Accuracy: {accuracy}")
+        accuracy, f1 = evaluate_model(hyperparameters)
+        print(f"Accuracy: {accuracy}, F1 score: {f1}")
         
         if accuracy > best_accuracy:
             best_accuracy = accuracy
