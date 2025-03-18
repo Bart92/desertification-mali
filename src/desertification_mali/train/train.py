@@ -80,7 +80,7 @@ class Trainer:
         """
         total_loss = 0
         for batch in self.dataloader:
-            input1, input2, target = batch
+            _, input1, input2, target = batch # The first value is the patch ID, which we don't need here
             input1, input2, target = input1.to(self.device), input2.to(self.device), target.to(self.device)
             
             self.optimizer.zero_grad()

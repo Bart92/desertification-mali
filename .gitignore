@@ -19,5 +19,12 @@ mali/
 # Ignore package metadata and dependencies
 *.egg-info/
 
-models/
+# Ignore data, logs, models files but keep the directory
+data/
+!data/.gitkeep
 logs/
+!logs/.gitkeep
+models/
+!models/.gitkeep
+results/
+!results/.gitkeep

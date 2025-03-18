@@ -49,10 +49,10 @@ def predict(model: torch.nn.Module, dataset: torch.utils.data.Dataset, device: t
 
     with torch.no_grad():
         for batch in dataloader:
-            input1, input2 = batch
+            tile_id, input1, input2 = batch
             input1, input2 = input1.to(device), input2.to(device)
             output = model(input1, input2)
             prediction = (output.cpu().numpy() > 0.5).astype(int)
-            predictions.append(prediction)
+            predictions.append({'Tile ID': tile_id[0], 'Prediction': int(prediction[0])})
 
     return predictions

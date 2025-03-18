@@ -52,6 +52,6 @@ class NDVIDataset(Dataset):
         
         if self.train:
             label = torch.tensor(label).float()
-            return ndvi_2020, ndvi_2025, label
+            return patch_id, ndvi_2020, ndvi_2025, label
         else:
-            return ndvi_2020, ndvi_2025
+            return patch_id, ndvi_2020, ndvi_2025

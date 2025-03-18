@@ -27,10 +27,10 @@ class Preprocessor:
         Runs the preprocessing steps for Sentinel-2 data.
         """
         # Step 1: Merge tiles
-        # self.merge_tiles()
+        self.merge_tiles()
 
         # Step 2: Calculate NDVI and store NDVI and RGB images
-        # self.save_rgb_ndvi()
+        self.save_rgb_ndvi()
 
         # Step 3: Create 512x512 patches of both NDVI and RGB
         self.create_patches()
