@@ -3,6 +3,7 @@ from desertification_mali.preprocess.rgb import save_rgb
 from desertification_mali.preprocess.ndvi import save_ndvi
 from desertification_mali.preprocess.patch import create_patches
 from desertification_mali.preprocess.io import read_band
+from desertification_mali.preprocess.augment import augment_patches
 from desertification_mali.utils import get_unique_dates, get_transform_and_crs, log_memory_usage
 import os
 
@@ -34,6 +35,9 @@ class Preprocessor:
 
         # Step 3: Create 512x512 patches of both NDVI and RGB
         self.create_patches()
+
+        # Step 4: Augment patches
+        self.augment_patches()
 
     def merge_tiles(self):
         """
@@ -78,4 +82,11 @@ class Preprocessor:
             self.patch_output_dir,
             self.dates
         )
-        
+    
+    def augment_patches(self):
+        """
+        Augments 512x512 patches with horizontal and vertical flipping, as well as 90°, 180°, and 270° rotations.
+        """
+        augment_patches(
+            self.patch_output_dir
+        )
