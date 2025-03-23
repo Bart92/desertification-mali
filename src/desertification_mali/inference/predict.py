@@ -29,10 +29,10 @@ def preprocess_data(data_path: str) -> torch.utils.data.Dataset:
     Returns:
     - torch.utils.data.Dataset: The preprocessed dataset.
     """
-    dataset = NDVIDataset(data_path, 'data/patches/labels.csv', train=False)
+    dataset = NDVIDataset(data_path, train=False)
     return dataset
 
-def predict(model: torch.nn.Module, dataset: torch.utils.data.Dataset, device: torch.device) -> list:
+def predict(model: torch.nn.Module, dataset: torch.utils.data.Dataset, device: torch.device, return_raw: bool = False) -> list:
     """
     Generates predictions using the trained model.
 
@@ -40,6 +40,7 @@ def predict(model: torch.nn.Module, dataset: torch.utils.data.Dataset, device: t
     - model (torch.nn.Module): The trained model.
     - dataset (torch.utils.data.Dataset): The dataset for prediction.
     - device (torch.device): The device to run the prediction on (CPU or GPU).
+    - return_raw (bool): Whether to return raw predictions
 
     Returns:
     - list: The predictions.
@@ -52,7 +53,10 @@ def predict(model: torch.nn.Module, dataset: torch.utils.data.Dataset, device: t
             tile_id, input1, input2 = batch
             input1, input2 = input1.to(device), input2.to(device)
             output = model(input1, input2)
-            prediction = (output.cpu().numpy() > 0.5).astype(int)
-            predictions.append({'Tile ID': tile_id[0], 'Prediction': int(prediction[0])})
+            prediction = output.cpu().numpy()[0]
+
+            if not return_raw:
+                prediction = int(prediction > 0.5)
+            predictions.append({'Tile ID': tile_id[0], 'Prediction': prediction})
 
     return predictions

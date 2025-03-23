@@ -13,13 +13,12 @@ class NDVIDataset(Dataset):
 
     Attributes:
     - patch_dir (str): Path to the directory containing the patches.
-    - labels (pd.DataFrame): DataFrame containing the patch IDs and their corresponding labels.
     - train (bool): Flag indicating whether the dataset is for training or inference.
     """
 
-    def __init__(self, patch_dir: str, label_file: pd.DataFrame, train: bool = True) -> None:
+    def __init__(self, patch_dir: str, train: bool = True) -> None:
         self.patch_dir = patch_dir
-        self.labels = pd.read_csv(label_file)
+        self.labels = pd.read_csv(os.path.join(patch_dir, 'labels.csv'))
         self.train = train
 
     def __len__(self) -> int:

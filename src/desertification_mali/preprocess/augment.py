@@ -9,8 +9,7 @@ def augment_patches(input_dir: str) -> None:
     Augments 512x512 patches with horizontal and vertical flipping, as well as 90°, 180°, and 270° rotations.
 
     Parameters:
-    - input_dir (str): Path to the directory containing the original patches.
-    - output_dir (str): Path to the directory where augmented patches will be saved.
+    - input_dir (str): Path to the directory containing the patches.
 
     Returns:
     - None

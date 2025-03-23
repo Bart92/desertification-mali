@@ -60,8 +60,8 @@ def create_patches(input_dir: str, output_dir: str, dates: list, size=512, manua
         random.shuffle(patches)
 
         manual_labeling_patches = patches[:manual_labeling_count]
-        weak_supervision_patches = patches[manual_labeling_count:manual_labeling_count + weak_supervision_count]
+        active_learning_patches = patches[manual_labeling_count:manual_labeling_count + weak_supervision_count]
 
         # Save patches to respective directories
         save_patches(manual_labeling_patches, 'manual_labeling')
-        save_patches(weak_supervision_patches, 'weak_supervision')
+        save_patches(active_learning_patches, 'active_learning')

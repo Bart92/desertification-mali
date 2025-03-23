@@ -34,7 +34,7 @@ def evaluate_model(hyperparameters):
     Returns:
     - float: The accuracy of the model on the validation set.
     """
-    dataset = NDVIDataset('data/patches/manual_labeling', 'data/patches/labels.csv')
+    dataset = NDVIDataset('data/patches/manual_labeling')
     model = SiameseNetwork()
     
     trainer = Trainer(

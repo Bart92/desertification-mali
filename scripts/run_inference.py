@@ -13,7 +13,7 @@ def main():
     parser.add_argument("--model_path", type=str, required=True, help="Path to the trained model.")
     args = parser.parse_args()
 
-    data_path = 'data/patches/manual_labeling'
+    data_path = 'data/patches/active_learning'
     results_dir = os.makedirs('results', exist_ok=True) or 'results'
     results_file = os.path.join(results_dir, 'predictions.csv')
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
