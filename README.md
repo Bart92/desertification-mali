@@ -33,10 +33,11 @@ Run preprocessing with:
 python scripts/run_preprocessing.py
 ```
 
-This is going to execute three steps:
+This is going to execute four steps:
 - It will merge the tiles you have selected together using nearest neighbour resampling
 - Calculate the NDVI, and store an RGB and NDVI image of both time stamps
 - Create 512x512 patches from the outputs
+- Augment the patches using flipping, rotating and active learning
 
 If you're training from scratch, you'll have to label a part of these 512x512 patches to train your model.
 
